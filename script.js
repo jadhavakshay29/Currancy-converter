@@ -24,7 +24,7 @@ const getCurrancy = async()=>{
         return data.conversion_rates;
         // console.log(data.conversion_rates);
     }catch(error){
-         console.log("error fetching currancy :",error );
+         console.error("error fetching currancy :",error );
     }
 }
 
