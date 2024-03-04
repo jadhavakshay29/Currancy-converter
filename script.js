@@ -1,7 +1,7 @@
 const fromDropDown = document.getElementById('fromCurrancy');
 const toDropDown = document.getElementById('toCurrancy');
-const inputNum = document.getElementById('amount');
 const convertBtn = document.getElementById('convert-btn');
+const result = document.getElementById('result');
 
 const apiKey = "4fd699a2cb658131e6cf17e0";
 
@@ -21,12 +21,12 @@ const getCurrancy = async()=>{
     try{
         const res = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/INR`);
         const data = await res.json();
-        console.log(data.conversion_rates);
+        return data.conversion_rates;
+        // console.log(data.conversion_rates);
     }catch(error){
          console.log("error fetching currancy :",error );
     }
 }
-getCurrancy();
 
 currancyCodes.forEach((currancy)=>{
     let option = document.createElement('option');
@@ -41,3 +41,29 @@ currancyCodes.forEach((currancy)=>{
     option.text= currancy;
     toDropDown.add(option);
 });
+
+//setting default value
+fromDropDown.value = "USD";
+toDropDown.value = "INR";
+
+let convertCurrancy =async ()=>{
+    //creating referances for
+    const amount = document.getElementById('amount').value;
+    const fromCurrancy = fromDropDown.value; //i.e country we'll be selecting
+    const toCurrancy = toDropDown.value;
+
+    if(amount.length !=0 ){
+        let getData =await getCurrancy();
+        // console.log(getData);
+        let fromExchangeRate = getData[fromCurrancy];
+        let toExchangeRate = getData[toCurrancy];
+        const convertedAmount = (amount / fromExchangeRate) * toExchangeRate;
+        result.innerHTML= `${amount} ${fromCurrancy} = ${convertedAmount.toFixed(2)} ${toCurrancy}`;
+        result.style.display = "block";
+        // console.log(convertedAmount.toFixed(2));
+    }else{
+        alert("Please Fill the Amount");
+    }
+};
+
+convertBtn.addEventListener('click', convertCurrancy);
